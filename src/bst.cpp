@@ -45,6 +45,8 @@ void BST::insert(int num)
                     aux->left->balance = 0;
                     updadeHeightBalance(root);
                     balanceTree(root);
+                    //balanceTree(root);
+
                     return;
                 }
                 else
@@ -61,6 +63,7 @@ void BST::insert(int num)
                     aux->right->balance = 0;
                     updadeHeightBalance(root);
                     balanceTree(root);
+                    //balanceTree(root);
                     return;
                 }
                 else
@@ -138,9 +141,9 @@ node *BST::getParent(int num)
                 aux = aux->right;
             }
         }
-        return NULL;
+        return 0;
     }
-    return NULL;
+    return 0;
 }
 
 void BST::updadeHeightBalance()
@@ -177,22 +180,18 @@ void BST::balanceTree(node *aux)
     if (aux != NULL && abs(aux->balance) > 1)
     {
 
-        balanceTree(aux->left);
-        balanceTree(aux->right);
+        
 
-        sort();
-        cout << endl;
-        cout << aux->value << endl;
+        //sort();
 
         if (aux->balance < -1)
         { // desbalanceado à esquerda
             if (aux->right->balance < 0)
             { // rotação simples à direita
-                cout << "right" << endl;
                 rightSpin(aux);
             }
             else if (aux->right->balance > 0)
-            { // rotação dupla à direita
+            { //rotação dupla à direita
                 leftSpin(aux->right);
                 rightSpin(aux);
             }
@@ -209,6 +208,9 @@ void BST::balanceTree(node *aux)
                 leftSpin(aux);
             }
         }
+
+        balanceTree(aux->left);
+        balanceTree(aux->right);
     }
 }
 
@@ -222,11 +224,12 @@ void BST::rightSpin(node *aux)
 
     if (axis->left != NULL)
     {
-        aux->left = axis->left;
+        aux->right = axis->left;
+    }else{
+        aux->right = NULL;
     }
 
     axis->left = aux;
-    aux->right = NULL;
 
     if (parent == root)
         root = axis;
@@ -245,9 +248,11 @@ void BST::leftSpin(node *aux)
     if (axis->right != NULL)
     {
         aux->left = axis->right;
+    }else{
+        aux->left = NULL;
     }
+
     axis->right = aux;
-    aux->right = NULL;
 
     if (parent == root)
         root = axis;

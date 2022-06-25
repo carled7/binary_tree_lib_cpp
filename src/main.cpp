@@ -24,7 +24,7 @@ int main()
     tree.insert(72);
     tree.insert(85);
 
-	//tree.updadeHeightBalance(tree.getRoot());
+	tree.updadeHeightBalance(tree.getRoot());
 
     tree.sort();
 
