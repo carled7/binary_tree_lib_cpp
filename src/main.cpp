@@ -23,10 +23,11 @@ int main()
     tree.insert(75);
     tree.insert(72);
     tree.insert(85);
+    //tree.insert(90);
 
 	tree.updadeHeightBalance(tree.getRoot());
 
-    tree.sort();
+   tree.sort();
 
     
     return 0;
