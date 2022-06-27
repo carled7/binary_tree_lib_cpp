@@ -19,7 +19,8 @@ public:
     void updadeHeightBalance();
     void updadeHeightBalance(node *aux);
     node* getRoot();
-    void balanceTree (node *aux);
+    int balanceTree (node *aux);
+    node* getUnbalanced(node *aux);
     void rightSpin(node *aux, bool isDouble = false);
     void leftSpin(node *aux,  bool isDouble = false);
 };
