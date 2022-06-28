@@ -45,10 +45,10 @@ void BST::insert(int num)
                     aux->left->balance = 0;
                     updadeHeightBalance(root);
 
-                    if (balanceTree(getParent(aux->value, 4)) == -1)
-                        balanceTree(getParent(aux->value, 3));
-
-                        return;
+                    /* if (balanceTree(getParent(aux->value, 4)) == -1)
+                         balanceTree(getParent(aux->value, 3));*/
+                    balanceTree(getUnbalanced(root));
+                    return;
                 }
                 else
                 {
@@ -64,10 +64,11 @@ void BST::insert(int num)
                     aux->right->balance = 0;
                     updadeHeightBalance(root);
 
-                    if (balanceTree(getParent(aux->value, 4)) == -1)
-                        balanceTree(getParent(aux->value, 3));
+                    /*if (balanceTree(getParent(aux->value, 4)) == -1)
+                        balanceTree(getParent(aux->value, 3));*/
+                    balanceTree(getUnbalanced(root));
 
-                        return;
+                    return;
                 }
                 else
                 {
@@ -164,6 +165,26 @@ node *BST::getParent(int num, int degree)
     return 0;
 }
 
+node *BST::getNode(int num)
+{
+    node *buffer = NULL;
+
+    return getNode(num, root, buffer);
+}
+
+node *BST::getNode(int num, node *aux, node *buffer)
+{
+
+    if (aux != NULL && aux->value == num)
+        return aux;
+    else if (aux != NULL)
+    {
+        buffer = getNode(num, aux->left, buffer);
+        buffer = buffer == NULL ? getNode(num, aux->right, buffer) : buffer;
+    }
+    return buffer;
+}
+
 void BST::updadeHeightBalance()
 {
     updadeHeightBalance(root);
@@ -184,7 +205,6 @@ void BST::updadeHeightBalance(node *aux)
         aux->height = max(leftHeight, rightHeight) + 1;
         aux->balance = leftHeight - rightHeight;
     }
-    sort();
 }
 
 node *BST::getRoot()
@@ -231,18 +251,26 @@ int BST::balanceTree(node *aux)
     return -1;
 }
 
-node *BST::getUnbalanced(node *aux){
+node *BST::getUnbalanced(node *aux)
+{
+    int buffer = -1;
+    return getNode(getUnbalanced(&buffer, aux));
+}
 
-    node *temp = NULL;
-    if(abs(aux->balance) > 1 && aux != NULL){
-        return aux;
-    }else if (aux != NULL){
-        temp = getUnbalanced(aux->right);
-        if(temp != NULL)
-            temp = getUnbalanced(aux->left);
+int BST::getUnbalanced(int *num, node *aux)
+{
+    if (aux != NULL && abs(aux->balance) > 1)
+    {
+        *num = aux->value;
+        return *num;
     }
-    return NULL;
-
+    else if (aux != NULL)
+    {
+        getUnbalanced(num, aux->left);
+        if (*num == -1)
+            getUnbalanced(num, aux->right);
+    }
+    return *num;
 }
 
 void BST::rightSpin(node *aux, bool isDouble)
@@ -268,8 +296,10 @@ void BST::rightSpin(node *aux, bool isDouble)
         root = axis;
     else if (isDouble)
         parent->left = axis;
-    else
+    else if (parent->value < axis->value)
         parent->right = axis;
+    else if (parent->value > axis->value)
+        parent->left = axis;
 }
 
 void BST::leftSpin(node *aux, bool isDouble)
@@ -295,9 +325,8 @@ void BST::leftSpin(node *aux, bool isDouble)
         root = axis;
     else if (isDouble)
         parent->right = axis;
-    else
+    else if (parent->value > axis->value)
         parent->left = axis;
+    else if (parent->value < axis->value)
+        parent->right = axis;
 }
-
-// se o parent for root, então axis sera o root
-// verificar os nos filhos do no aux depois do balanceamento
