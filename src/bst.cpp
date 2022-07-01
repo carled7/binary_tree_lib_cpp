@@ -2,7 +2,7 @@
 
 struct node
 {
-    int value, height, balance;
+    int value, height, balance, nLeft, nRight, depth;
     node *left, *right;
 
     node(int _x)
@@ -95,7 +95,8 @@ void BST::sort(node *aux)
     {
         sort(aux->left);
         cout << aux->value << "\theight: " << aux->height
-             << "\tbalance: " << aux->balance << endl;
+             << "\tbalance: " << aux->balance << "\tnLef: " << aux->nLeft
+             << "\tnRig: " << aux->nRight << "\tnDep: " << aux->depth << endl;
         sort(aux->right);
     }
 }
@@ -123,6 +124,28 @@ bool BST::search(int num)
         return false;
     }
     return false;
+}
+
+int BST::getDepth(int num)
+{
+    node *aux = root;
+    int depth = 0;
+    while (aux != NULL)
+    {
+        if (num == aux->value)
+            return depth;
+        else if (num < aux->value)
+        {
+            depth++;
+            aux = aux->left;
+        }
+        else if (num > aux->value)
+        {
+            depth++;
+            aux = aux->right;
+        }
+    }
+    return NULL;
 }
 
 node *BST::getParent(int num, int degree)
@@ -204,6 +227,10 @@ void BST::updadeHeightBalance(node *aux)
 
         aux->height = max(leftHeight, rightHeight) + 1;
         aux->balance = leftHeight - rightHeight;
+
+        aux->nLeft = aux->left != NULL ? aux->left->nLeft + aux->left->nRight + 1 : 0;
+        aux->nRight = aux->right != NULL ? aux->right->nLeft + aux->right->nRight + 1 : 0;
+        aux->depth = getDepth(aux->value);
     }
 }
 

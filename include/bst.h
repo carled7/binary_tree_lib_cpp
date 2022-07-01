@@ -12,6 +12,7 @@ private:
     node *getNode(int num, node *aux, node *buffer);
     void updadeHeightBalance(node *aux);
     void sort(node *aux);
+    int getDepth(int num);
 
 public:
     BST();

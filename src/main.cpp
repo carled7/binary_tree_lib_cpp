@@ -5,7 +5,7 @@ using namespace std;
 int main()
 {
     BST tree = BST();
-    int t = -1;
+
 
     tree.insert(10);
     tree.insert(20);
@@ -25,19 +25,17 @@ int main()
     tree.insert(72);
     tree.insert(85);
 
-    tree.sort();
-
     /*
-
+    int n;
     cin >> n;
 
     for (int i = 0; i < n; i++)
     {
         tree.insert(rand()%300);
-    }
+    }*/
     
     tree.sort();
-    */
+    
 
     return 0;
 }
