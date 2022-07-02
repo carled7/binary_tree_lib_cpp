@@ -6,7 +6,6 @@ int main()
 {
     BST tree = BST();
 
-
     tree.insert(10);
     tree.insert(20);
     tree.insert(30);
@@ -24,18 +23,6 @@ int main()
     tree.insert(75);
     tree.insert(72);
     tree.insert(85);
-
-    /*
-    int n;
-    cin >> n;
-
-    for (int i = 0; i < n; i++)
-    {
-        tree.insert(rand()%300);
-    }*/
-    
-    tree.sort();
-    
 
     return 0;
 }

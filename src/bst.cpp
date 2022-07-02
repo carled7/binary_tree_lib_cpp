@@ -45,9 +45,10 @@ void BST::insert(int num)
                     aux->left->balance = 0;
                     updadeHeightBalance(root);
 
-                    /* if (balanceTree(getParent(aux->value, 4)) == -1)
-                         balanceTree(getParent(aux->value, 3));*/
-                    balanceTree(getUnbalanced(root));
+                    cout << "INSERINDO " << num << endl;
+                    while (getUnbalanced() != NULL)
+                        balanceTree(getUnbalanced());
+                    sort();
                     return;
                 }
                 else
@@ -63,11 +64,10 @@ void BST::insert(int num)
                     aux->right->height = 1;
                     aux->right->balance = 0;
                     updadeHeightBalance(root);
-
-                    /*if (balanceTree(getParent(aux->value, 4)) == -1)
-                        balanceTree(getParent(aux->value, 3));*/
-                    balanceTree(getUnbalanced(root));
-
+                    cout << "INSERINDO " << num << endl;
+                    while (getUnbalanced() != NULL)
+                        balanceTree(getUnbalanced());
+                    sort();
                     return;
                 }
                 else
@@ -84,21 +84,98 @@ void BST::insert(int num)
 
 void BST::sort()
 {
-    system("clear");
-    sort(root);
+    // system("clear");
     cout << endl;
+    sort(root);
+    cout << "------------------------------------" << endl;
 }
 
 void BST::sort(node *aux)
 {
     if (aux != NULL)
     {
+        //"\tnLef: " << aux->nLeft << "\tnRig: " << aux->nRight << "\tnDep: " << aux->depth
         sort(aux->left);
         cout << aux->value << "\theight: " << aux->height
-             << "\tbalance: " << aux->balance << "\tnLef: " << aux->nLeft
-             << "\tnRig: " << aux->nRight << "\tnDep: " << aux->depth << endl;
+             << "\tbalance: " << aux->balance << endl;
         sort(aux->right);
     }
+}
+
+bool BST::isLeaf(node *aux)
+{
+    if (aux->left == NULL && aux->right == NULL)
+        return true;
+    else
+        return false;
+}
+
+void BST::print()
+{
+    //Método em desenvolvimento
+    int buffer = 0;
+    for (int d = 0; d < root->height; d++)
+    {
+        print(root, d, &buffer);
+        cout << endl;
+    }
+}
+
+void BST::print(node *aux, int depth, int *buffer)
+{
+    //Método em desenvolvimento
+    if (aux != NULL && aux->depth == depth)
+    {
+        int lNleft = aux->left == NULL ? 0 : aux->left->nLeft;
+        int lNright = aux->left == NULL ? 0 : aux->left->nRight;
+        int rNleft = aux->right == NULL ? 0 : aux->right->nLeft;
+        int rNright = aux->right == NULL ? 0 : aux->right->nRight;
+
+        /*for (int i = 0; i <= lNleft; i++)
+            cout << "   ";
+        cout << '|';
+        for (int i = 0; i < lNright; i++)
+            cout << "---";
+        cout << aux->value;
+        for (int i = 0; i < rNleft; i++)
+            cout << "---";
+        cout << '|';
+        for (int i = 0; i <= rNright; i++)
+            cout << "   ";*/
+        if (!isLeaf(aux))
+        {
+            for (int i = 0; i <= aux->nLeft; i++)
+            {
+                cout << "   ";
+            }
+            cout << aux->value;
+            for (int i = 0; i <= aux->nRight; i++)
+            {
+                cout << "   ";
+            }
+        }
+        else
+        {
+            for (int i = 0; i <= getParent(aux->value, 2)->nLeft - 3; i++)
+            {
+                cout << " ";
+            }
+            cout << aux->value;
+            for (int i = 0; i < *buffer; i++)
+            {
+                cout << "XXX";
+            }
+        }
+        return;
+    }
+    else if (aux != NULL && aux->depth < depth)
+    {
+        //*buffer++;
+        print(aux->left, depth, buffer);
+        print(aux->right, depth, buffer);
+    }
+    else
+        return;
 }
 
 bool BST::search(int num)
@@ -152,7 +229,6 @@ node *BST::getParent(int num, int degree)
 {
     if (!isEmpt())
     {
-
         if (degree == 1)
         {
             node *aux = root, *parent = root;
@@ -244,16 +320,16 @@ int BST::balanceTree(node *aux)
 
     if (aux != NULL && abs(aux->balance) > 1)
     {
-        // sort();
-
         if (aux->balance < -1)
         { // desbalanceado à esquerda
             if (aux->right->balance < 0)
             { // rotação simples à direita
+                cout << "Rotação simples à direita (" << aux->value << ")" << endl;
                 rightSpin(aux);
             }
             else if (aux->right->balance > 0)
             { // rotação dupla à direita
+                cout << "Rotação dupla à direita (" << aux->value << ")" << endl;
                 leftSpin(aux->right, true);
                 rightSpin(aux);
             }
@@ -262,10 +338,12 @@ int BST::balanceTree(node *aux)
         { // desbalanceado à direita
             if (aux->left->balance > 0)
             { // rotação simples à esquerda
+                cout << "Rotação simples à esquerda (" << aux->value << ")" << endl;
                 leftSpin(aux);
             }
             else if (aux->left->balance < 0)
             { // rotação dupla à esquerda
+                cout << "Rotação dupla à esquerda (" << aux->value << ")" << endl;
                 rightSpin(aux->left, true);
                 leftSpin(aux);
             }
@@ -278,31 +356,37 @@ int BST::balanceTree(node *aux)
     return -1;
 }
 
-node *BST::getUnbalanced(node *aux)
+node *BST::getUnbalanced()
 {
     int buffer = -1;
-    return getNode(getUnbalanced(&buffer, aux));
+    return getNode(getUnbalanced(&buffer, root));
 }
 
 int BST::getUnbalanced(int *num, node *aux)
 {
-    if (aux != NULL && abs(aux->balance) > 1)
+    if (aux == NULL)
     {
-        *num = aux->value;
         return *num;
     }
     else if (aux != NULL)
     {
-        getUnbalanced(num, aux->left);
-        if (*num == -1)
-            getUnbalanced(num, aux->right);
+        if (*num == -1 && abs(aux->balance) > 1)
+        {
+            *num = aux->value;
+            return *num;
+        }
+        else
+        {
+            getUnbalanced(num, aux->left);
+            if (*num == -1)
+                getUnbalanced(num, aux->right);
+        }
+        return *num;
     }
-    return *num;
 }
 
 void BST::rightSpin(node *aux, bool isDouble)
 {
-
     node *parent, *axis;
 
     parent = getParent(aux->value);
@@ -356,4 +440,15 @@ void BST::leftSpin(node *aux, bool isDouble)
         parent->left = axis;
     else if (parent->value < axis->value)
         parent->right = axis;
+}
+
+void BST::test(BST tree){
+    int n;
+    cin >> n;
+
+    for (int i = 0; i < n; i++)
+    {
+        tree.insert(rand()%300);
+    }
+    tree.sort();
 }
